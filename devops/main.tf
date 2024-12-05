@@ -39,6 +39,10 @@ resource "azurerm_container_app_environment" "example" {
     resource_group_name = azurerm_resource_group.rg.name
 }
 
+resource "azurerm_resource_provider_registration" "app" {
+    name = "Microsoft.App"
+}
+
 resource "azurerm_container_app" "example" {
     name                          = "trav-app"
     container_app_environment_id  = azurerm_container_app_environment.example.id
@@ -68,4 +72,6 @@ resource "azurerm_container_app" "example" {
             memory = "1Gi"
         }
     }
+
+    depends_on = [ azurerm_resource_provider_registration.app ]
 }

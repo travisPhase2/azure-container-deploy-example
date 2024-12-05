@@ -4,7 +4,7 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const app = express();
-const PORT = 8000
+const PORT = 80
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
 
 app.get('/', (_, res) => {

@@ -35,23 +35,23 @@ resource "azurerm_user_assigned_identity" "deployment_identity" {
 
 resource "azurerm_log_analytics_workspace" "example" {
   name                = "trav-analytics-ws"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
   sku                 = "PerGB2018"
   retention_in_days   = 30
 }
 
 resource "azurerm_container_app_environment" "example" {
   name                       = "trav-container-app-env"
-  location                   = azurerm_resource_group.example.location
-  resource_group_name        = azurerm_resource_group.example.name
+  location                   = azurerm_resource_group.rg.location
+  resource_group_name        = azurerm_resource_group.rg.name
   log_analytics_workspace_id = azurerm_log_analytics_workspace.example.id
 }
 
 resource "azurerm_container_app" "example" {
   name                         = "trav-app"
   container_app_environment_id = azurerm_container_app_environment.example.id
-  resource_group_name          = azurerm_resource_group.example.name
+  resource_group_name          = azurerm_resource_group.rg.name
   revision_mode                = "Single"
 
   template {

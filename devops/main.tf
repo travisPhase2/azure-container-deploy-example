@@ -14,6 +14,18 @@ resource "azurerm_resource_group" "rg" {
     location = var.resource_group_location
 }
 
+resource "azurerm_user_assigned_identity" "container_identity" {
+  name = "container-app-identity"
+  resource_group_name = azurerm_resource_group.rg.name
+  location = azurerm_resource_group.rg.location
+}
+
+resource "azurerm_role_assignment" "acr_pull_role" {
+  scope = azurerm_container_registry.acr.id
+  role_definition_name = "AcrPull"
+  principal_id = azurerm_user_assigned_identity.container_identity.principal_id
+}
+
 resource "azurerm_container_registry" "acr" {
     name                = "trav-container-registry"
     resource_group_name = azurerm_resource_group.rg.name
@@ -29,6 +41,11 @@ resource "azurerm_container_group" "container" {
     ip_address_type = "Public"
     os_type = "Linux"
     restart_policy = var.restart_policy
+
+    identity {
+      type = "UserAssigned"
+      identity_ids = [azurerm_user_assigned_identity.container_identity.id]
+    }
 
     container {
         name = "${var.container_name_prefix}${random_string.container_name.result}"

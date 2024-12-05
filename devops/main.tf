@@ -33,45 +33,33 @@ resource "azurerm_user_assigned_identity" "deployment_identity" {
     location            = azurerm_resource_group.rg.location
 }
 
-resource "azurerm_container_app_environment" "example" {
-    name                = "trav-app-environment"
-    location            = azurerm_resource_group.rg.location
-    resource_group_name = azurerm_resource_group.rg.name
+resource "azurerm_log_analytics_workspace" "example" {
+  name                = "trav-analytics-ws"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
 }
 
-resource "azurerm_resource_provider_registration" "app" {
-    name = "Microsoft.App"
+resource "azurerm_container_app_environment" "example" {
+  name                       = "trav-container-app-env"
+  location                   = azurerm_resource_group.example.location
+  resource_group_name        = azurerm_resource_group.example.name
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.example.id
 }
 
 resource "azurerm_container_app" "example" {
-    name                          = "trav-app"
-    container_app_environment_id  = azurerm_container_app_environment.example.id
-    resource_group_name           = azurerm_resource_group.rg.name
-    revision_mode                 = "Single"
+  name                         = "trav-app"
+  container_app_environment_id = azurerm_container_app_environment.example.id
+  resource_group_name          = azurerm_resource_group.example.name
+  revision_mode                = "Single"
 
-    identity {
-        type = "UserAssigned"
-        identity_ids = [azurerm_user_assigned_identity.deployment_identity.id]
+  template {
+    container {
+      name   = "trav-container-app"
+      image  = "mcr.microsoft.com/k8se/quickstart:latest"
+      cpu    = 0.25
+      memory = "0.5Gi"
     }
-
-    ingress {
-        external_enabled = true
-        target_port     = 8000
-
-        traffic_weight {
-            latest_revision = true
-            percentage     = 100
-        }
-    }
-
-    template {
-        container {
-            name   = "app"
-            image  = "${var.image}"
-            cpu    = 0.5
-            memory = "1Gi"
-        }
-    }
-
-    depends_on = [ azurerm_resource_provider_registration.app ]
+  }
 }

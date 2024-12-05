@@ -20,18 +20,18 @@ resource "azurerm_user_assigned_identity" "container_identity" {
   location = azurerm_resource_group.rg.location
 }
 
-resource "azurerm_role_assignment" "acr_pull_role" {
-  scope = azurerm_container_registry.acr.id
-  role_definition_name = "AcrPull"
-  principal_id = azurerm_user_assigned_identity.container_identity.principal_id
-}
-
 resource "azurerm_container_registry" "acr" {
     name                = "TravContainerRegistry"
     resource_group_name = azurerm_resource_group.rg.name
     location            = azurerm_resource_group.rg.location
     sku                 = "Basic"
     admin_enabled       = true
+}
+
+resource "azurerm_role_assignment" "acr_pull_role" {
+  scope = azurerm_container_registry.acr.id
+  role_definition_name = "AcrPull"
+  principal_id = azurerm_user_assigned_identity.container_identity.principal_id
 }
 
 resource "azurerm_container_group" "container" {

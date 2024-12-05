@@ -44,7 +44,6 @@ resource "azurerm_container_app" "example" {
     container_app_environment_id  = azurerm_container_app_environment.example.id
     resource_group_name           = azurerm_resource_group.rg.name
     revision_mode                 = "Single"
-    location                      = azurerm_resource_group.rg.location
 
     identity {
         type = "UserAssigned"

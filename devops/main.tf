@@ -46,4 +46,26 @@ resource "azurerm_container_app" "example" {
       latest_revision = true
     }
   }
+
+  identity {
+    type = "SystemAssigned"
+  }
+}
+
+resource "azurerm_container_registry" "example" {
+  name                = "exampleappregistry"
+  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.example.location
+  sku                 = "Basic"
+  admin_enabled       = true
+
+  identity {
+    type = "SystemAssigned"
+  }
+}
+
+resource "azurerm_role_assignment" "example_acr_pull" {
+  scope                = azurerm_container_registry.example.id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_container_registry.example.identity[0].principal_id
 }

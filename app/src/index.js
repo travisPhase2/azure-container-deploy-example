@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import path from 'path';
 
 const app = express();
-const PORT = 8000
+const PORT = 80
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
 

@@ -49,7 +49,7 @@ resource "azurerm_container_group" "container" {
 
     container {
         name = "${var.container_name_prefix}${random_string.container_name.result}"
-        image = "${azurerm_container_registry.acr.login_server}/${var.image}"
+        image = "${var.image}"
         cpu = var.cpu_cores
         memory = var.memory_in_gb
 

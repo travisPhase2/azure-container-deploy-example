@@ -31,7 +31,7 @@ variable "image" {
 variable "port" {
   type        = number
   description = "Port to open on the container and the public IP address."
-  default     = 80
+  default     = 8000
 }
 
 variable "cpu_cores" {

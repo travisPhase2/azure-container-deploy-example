@@ -1,4 +1,4 @@
-name: Auto deploy container app(s)
+name: Auto deploy container app(s) to stage
 
 on:
   push:

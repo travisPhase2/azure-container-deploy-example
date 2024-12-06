@@ -1,3 +1,12 @@
 node_modules
 package-lock.json
 .vscode
+
+.terraform
+.terraform.lock.hcl
+terraform.tfstate
+.terraform.tfstate.lock.info
+terraform.tfstate.backup
+LICENSE.txt
+terraform-provider-*
+

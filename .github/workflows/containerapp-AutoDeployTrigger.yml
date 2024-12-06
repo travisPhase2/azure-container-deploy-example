@@ -1,25 +1,19 @@
-name: Trigger auto deployment for containerapp
+name: Auto deploy container app(s)
 
-# When this action will be executed
 on:
-  # Automatically trigger it when detected changes in repo
   push:
     branches: 
       [ main ]
     paths:
     - '**'
-    - '.github/workflows/containerapp-AutoDeployTrigger-f3576fe0-537a-4c60-92b5-4b22c00c6219.yml'
-
-  # Allow manual trigger 
-  workflow_dispatch:      
+    - '.github/workflows/containerapp-AutoDeployTrigger.yml'
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions: 
-      id-token: write #This is required for requesting the OIDC JWT Token
-      contents: read #Required when GH token is used to authenticate with private repo
-
+      id-token: write # This is required for requesting the OIDC JWT Token
+      contents: read # Required when GH token is used to authenticate with private repo
     steps:
       - name: Checkout to the branch
         uses: actions/checkout@v2
@@ -44,5 +38,11 @@ jobs:
           imageToBuild: compelliercontainerregistry.azurecr.io/containerapp:${{ github.sha }}
           _buildArgumentsKey_: |
             _buildArgumentsValues_
-
-
+  
+  hello:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    environment: 'stage'
+    steps:
+      - name: Achieve Dreams
+        run: echo "Hello"
